@@ -1,0 +1,45 @@
+import math
+
+# Parametros geometricos
+alpha = App.ActiveDocument.Spreadsheet.alpha_p
+R = App.ActiveDocument.Spreadsheet.R
+D = App.ActiveDocument.Spreadsheet.D
+pi = math.pi
+
+#constantes de forma
+R_alpha = math.sqrt(alpha)*R
+r = math.sqrt( (4*R_alpha*R_alpha+D*D)/8 )
+a = pi*r*r
+a_D = pi*D*D/4
+delta = 0.5
+#print('area',a-a_D)
+
+#Funcion para calcular la componente y de cada punto
+def y_i(r_i):
+	arg1 = math.pow( (a-a_D)/pi/(r+r_i), 2)
+	arg2 = math.pow( r-r_i ,2)
+	y = math.sqrt( arg1 - arg2 )
+	#print(pi*(r_i+r)*math.sqrt(math.pow(r-r_i,2)+y*y) , r_i)
+	return -y
+
+#Primer punto
+ri = D/2 
+App.getDocument('cilindros').getObject('Sketch004').addGeometry(Part.LineSegment(App.Vector(ri,0,0),App.Vector(ri+delta,y_i(ri+delta),0)),False)
+
+#Puntos intermedios
+linea = 0
+while ri + 2*delta < R_alpha  :
+	ri = ri + delta
+	yi = y_i(ri)
+	
+	App.getDocument('cilindros').getObject('Sketch004').addGeometry(Part.LineSegment(App.Vector(ri,yi,0),App.Vector(ri+delta,y_i(ri+delta),0)),False)
+	App.getDocument('cilindros').getObject('Sketch004').addConstraint(Sketcher.Constraint('Coincident',linea+1,1,linea,2))
+
+	linea = linea + 1
+
+#Punto final
+App.getDocument('cilindros').getObject('Sketch004').addGeometry(Part.LineSegment(App.Vector(ri+delta,y_i(ri+delta),0),App.Vector(R_alpha,0,0)),False)
+App.getDocument('cilindros').getObject('Sketch004').addConstraint(Sketcher.Constraint('Coincident',linea+1,1,linea,2))
+
+App.ActiveDocument.recompute()
+App.ActiveDocument.recompute()

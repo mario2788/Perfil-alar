@@ -1,0 +1,13 @@
+
+
+f = open("puntos_eppler420.txt")
+for i in range(1,100):
+	date = f.readline()
+	if( date != ' '):
+		print( i,":"
+,date )
+
+
+
+f.close()
+
