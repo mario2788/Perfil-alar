@@ -2,9 +2,8 @@ import Draft
 import numpy as npy
 import math as m
 
-
 # parametros de operacion y geometricos
-f = open( "/home/mario/Documents/Imp/puntos_eppler420_Selig format dat.txt" )
+f = open( "/home/mario/Documentos/Perfil-alar/puntos_eppler420_Selig_format_dat.txt" )
 vel_angular = 2500 # rmp
 diam_int = 30 # mm
 diam_ext = 80 # mm
@@ -12,7 +11,6 @@ largo = m.pi*diam_int/3*(1-0.1)   # mm
 
 arrayNum = []
 for i in range(1, 100):
-
 	temp = f.readline().split()
 	if ( len(temp) > 1 ) :
 		[n1, n2] = temp
@@ -55,12 +53,18 @@ def closeCurve( array3Dimesional ):
 	spline = Draft.makeBSpline(points, closed=False, face=False, support=None)
 	Draft.autogroup(spline)
 
-closeCurve( proyec(diam_int/2) )
-#closeCurve( arrayNum )
+while  diam_int  < diam_ext :
+	closeCurve( proyec(diam_int/2) )
+	#closeCurve( arrayNum )
+	
+	# Rotacion y traslado
+	Draft.rotate([FreeCAD.ActiveDocument.BSpline], 25, FreeCAD.Vector(0.0, 0.0, 0.0), axis=FreeCAD.Vector(0.0, 0.0, 1.0), copy=True)
+	#Draft.move([FreeCAD.ActiveDocument.BSpline001], FreeCAD.Vector(0.0, 0.0, 1.0), copy=False)
+	diam_int = diam_int + 1
+
+
+
+	
+
 FreeCAD.ActiveDocument.recompute()
 Gui.SendMsgToActiveView("ViewFit")
-
-
-# Rotacion y traslado
-Draft.rotate([FreeCAD.ActiveDocument.BSpline], 25, FreeCAD.Vector(0.0, 0.0, 0.0), axis=FreeCAD.Vector(0.0, 0.0, 1.0), copy=True)
-Draft.move([FreeCAD.ActiveDocument.BSpline001], FreeCAD.Vector(0.0, 0.0, 1.0), copy=False)
